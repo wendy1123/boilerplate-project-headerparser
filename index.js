@@ -23,23 +23,17 @@ app.get('/api/hello', function (req, res) {
 });
 
 // Endpoint that returns user's IP address, language, and user-agent (software)
-app.get('/api/whoami', function (req, res) {
-  // Extract the necessary information from the request headers
-  var ipaddress = req.ip;  // Get the IP address (ensure 'trust proxy' is set)
-  
-  // Extract the preferred language from the 'Accept-Language' header
-  var language = req.headers['accept-language'].split(',')[0];  // Get the first language
-  
-  // Extract the user-agent (software) string from the 'User-Agent' header
-  var software = req.headers['user-agent'];  // Get the full user-agent string
+app.get('/api/whoami', function(req, res) {
+  // Directly extract the IP address, language, and software
+  var ipaddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  var language = req.headers['accept-language'] ? req.headers['accept-language'].split(',')[0] : 'unknown';
+  var software = req.headers['user-agent'] || 'unknown';
 
-  // Send the extracted info as a JSON response
-  res.json({
-    ipaddress: ipaddress,
-    language: language,
-    software: software
-  });
+  // Send the response as a JSON object
+  res.json({ ipaddress, language, software });
 });
+
+
 
 // Start the server
 var listener = app.listen(process.env.PORT || 8080, function () {
