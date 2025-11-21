@@ -6,6 +6,7 @@ var app = express();
 // so that your API is remotely testable by FCC
 var cors = require('cors');
 app.use(cors({ optionsSuccessStatus: 200 })); // some legacy browsers choke on 204
+app.set('trust proxy', true);
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
@@ -20,7 +21,7 @@ app.get('/api/hello', function (req, res) {
   res.json({ greeting: 'hello API' });
 });
 
-app.get('/api/data', function (req, res) {
+app.get('/api/whoami', function (req, res) {
   // Extract the necessary information from the request headers
   var ipaddress = req.ip;  // Get the IP address
   var language = req.headers['accept-language'];  // Get the full preferred language string
