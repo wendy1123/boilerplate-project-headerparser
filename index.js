@@ -1,34 +1,45 @@
-<!DOCTYPE html>
+require('dotenv').config();
+var express = require('express');
+var app = express();
 
-<html>
+// enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
+// so that your API is remotely testable by FCC
+var cors = require('cors');
+app.use(cors({ optionsSuccessStatus: 200 })); // some legacy browsers choke on 204
 
-   <head>
-      <title>Request Header Parser</title>
-      <link rel="shortcut icon" href="https://cdn.hyperdev.com/us-east-1%3A52a203ff-088b-420f-81be-45bf559d01b1%2Ffavicon.ico" type="image/x-icon"/>
-      <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
-      <link href="style.css" rel="stylesheet" type="text/css">
-   </head>
+// http://expressjs.com/en/starter/static-files.html
+app.use(express.static('public'));
 
-   <body>
-      <div class="container">
-        <h1>Request Header Parser Microservice project</h1>
+// http://expressjs.com/en/starter/basic-routing.html
+app.get('/', function (req, res) {
+  res.sendFile(__dirname + '/views/index.html');
+});
 
-        <h2>Example Usage:</h2>
-        <p>
-          <a href="api/data">[base url]/api/data</a>
-        </p>
+// your first API endpoint...
+app.get('/api/hello', function (req, res) {
+  res.json({ greeting: 'hello API' });
+});
 
-        <h2>Example Output:</h2>
-        <p>
-          <code>{"ipaddress":"::ffff:158.19.15.101","language":"en-US,en;q=0.6",<br>"software":"Mozilla/4.0 (X11; Ubuntu; Linux x85_63; rv:40.0) Gecko/20100102 Firefox/40.0"}</code>
-        </p>
-      </div>
-      <div class="footer">
-        <p>
-          by <a href="https://www.freecodecamp.org">freeCodeCamp</a>
-        </p>
-      </div>
-   </body>
+app.get('/api/data', function (req, res) {
+  // Extract the necessary information from the request headers
+  var ipaddress = req.ip;  // Get the IP address
+  var language = req.headers['accept-language'];  // Get the full preferred language string
+  var software = req.headers['user-agent'];  // Get the user agent string
+
+  // Send the extracted info as a JSON response
+  res.json({
+    ipaddress: ipaddress,
+    language: language,
+    software: software
+  });
+});
 
 
-</html>
+
+
+
+
+// listen for requests :)
+var listener = app.listen(process.env.PORT || 3000, function () {
+  console.log('Your app is listening on port ' + listener.address().port);
+});
