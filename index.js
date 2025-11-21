@@ -22,12 +22,11 @@ app.get('/api/hello', function (req, res) {
 });
 
 app.get('/api/whoami', function (req, res) {
-  // Extract the necessary information from the request headers
-  var ipaddress = req.ip;  // Get the IP address
-  var language = req.headers['accept-language'];  // Get the full preferred language string
-  var software = req.headers['user-agent'];  // Get the user agent string
 
-  // Send the extracted info as a JSON response
+  var ipaddress = req.ip;  
+  var language = req.headers['accept-language'].split(',')[0];  
+  var software = req.headers['user-agent'];  
+
   res.json({
     ipaddress: ipaddress,
     language: language,
